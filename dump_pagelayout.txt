@@ -1,0 +1,36 @@
+"use client";
+
+import Navbar from "./Navbar";
+import Sidebar from "./Sidebar";
+import RightPanel from "./RightPanel";
+
+export default function PageLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="min-h-screen" style={{ background: "#f0f2f5" }}>
+      <Navbar />
+      <div
+        className="w-full px-3 py-3"
+        style={{
+          marginTop: "60px",
+          display: "grid",
+          gridTemplateColumns: "240px 1fr 288px",
+          gap: "10px",
+          alignItems: "start",
+          minHeight: "calc(100vh - 60px)",
+        }}
+      >
+        <aside className="min-w-0">
+          <div className="sticky" style={{ top: "68px" }}>
+            <Sidebar />
+          </div>
+        </aside>
+        <main className="min-w-0">{children}</main>
+        <aside className="min-w-0">
+          <div className="sticky" style={{ top: "68px" }}>
+            <RightPanel />
+          </div>
+        </aside>
+      </div>
+    </div>
+  );
+}

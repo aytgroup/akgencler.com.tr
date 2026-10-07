@@ -1,0 +1,151 @@
+"use client";
+
+import { useState } from "react";
+
+const stories = [
+  { id: 1, name: "Hikayem",  avatar: "🇹🇷", isOwn: true,  seen: false, color: ["#e63946","#c1121f"] },
+  { id: 2, name: "Ahmet K.", avatar: "AK", isOwn: false, seen: false, color: ["#1d3557","#457b9d"] },
+  { id: 3, name: "Zeynep M.",avatar: "ZM", isOwn: false, seen: false, color: ["#e63946","#457b9d"] },
+  { id: 4, name: "Burak T.", avatar: "BT", isOwn: false, seen: true,  color: ["#2d6a4f","#40916c"] },
+  { id: 5, name: "Selin Ö.", avatar: "SÖ", isOwn: false, seen: false, color: ["#e76f51","#f4a261"] },
+  { id: 6, name: "Emre Y.",  avatar: "EY", isOwn: false, seen: true,  color: ["#457b9d","#1d3557"] },
+  { id: 7, name: "Ayşe D.",  avatar: "AD", isOwn: false, seen: false, color: ["#c1121f","#e63946"] },
+  { id: 8, name: "Can B.",   avatar: "CB", isOwn: false, seen: false, color: ["#40916c","#2d6a4f"] },
+];
+
+export default function StoryBar() {
+  const [activeStory, setActiveStory] = useState<number | null>(null);
+
+  return (
+    <>
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 px-4 py-3 mb-0">
+        <div className="flex gap-4 overflow-x-auto scrollbar-hide">
+          {stories.map((story) => (
+            <button
+              key={story.id}
+              onClick={() => setActiveStory(story.id)}
+              className="flex flex-col items-center gap-1.5 flex-shrink-0 group cursor-pointer"
+            >
+              {/* Halka */}
+              <div
+                className="p-[2.5px] rounded-full transition-transform duration-150 group-hover:scale-105"
+                style={{
+                  background: story.seen
+                    ? "#d1d5db"
+                    : "linear-gradient(135deg, #e63946, #c1121f, #1d3557)",
+                }}
+              >
+                <div
+                  className="w-[46px] h-[46px] rounded-full border-2 border-white flex items-center justify-center relative overflow-hidden"
+                  style={{ background: story.isOwn ? "#E30A17" : `linear-gradient(135deg, ${story.color[0]}, ${story.color[1]})` }}
+                >
+                  {story.isOwn ? (
+                    /* Daire 52×52px — SVG tam kaplasın, kırmızı zemin daire ile aynı renk */
+                    <svg width="46" height="46" viewBox="0 0 900 900" xmlns="http://www.w3.org/2000/svg" style={{display:"block"}}>
+                      {/* Kare zemin — daire clipPath ile dışarısı kırpılır */}
+                      <rect width="900" height="900" fill="#E30A17"/>
+                      {/* Bayrak ortalanmış: 900×600 → 900×900 içinde dikey ortalama için y=150 */}
+                      <g transform="translate(0,150)">
+                        <circle cx="300" cy="300" r="200" fill="white"/>
+                        <circle cx="360" cy="300" r="160" fill="#E30A17"/>
+                        <g transform="translate(530,300) rotate(-12)">
+                          <polygon fill="white" points="0,-80 18.6,-57.2 59.5,-24.7 30.4,21.9 37.3,65.2 0,40 -37.3,65.2 -30.4,21.9 -59.5,-24.7 -18.6,-57.2"/>
+                        </g>
+                      </g>
+                    </svg>
+                  ) : (
+                    <span className="text-white font-bold text-[11px]">{story.avatar}</span>
+                  )}
+                  {story.isOwn && (
+                    <div
+                      className="absolute -bottom-0.5 -right-0.5 w-[18px] h-[18px] rounded-full border-2 border-white flex items-center justify-center"
+                      style={{ background: "#e63946" }}
+                    >
+                      <svg width="7" height="7" fill="white" viewBox="0 0 24 24">
+                        <path d="M12 5v14M5 12h14"/>
+                      </svg>
+                    </div>
+                  )}
+                </div>
+              </div>
+              <span
+                className="text-[10px] font-medium w-[48px] text-center leading-tight truncate"
+                style={{ color: story.seen ? "#9ca3af" : "#374151" }}
+              >
+                {story.name}
+              </span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Story Modal */}
+      {activeStory && (
+        <div
+          className="fixed inset-0 z-[200] flex items-center justify-center"
+          style={{ background: "rgba(0,0,0,0.82)" }}
+          onClick={() => setActiveStory(null)}
+        >
+          <div
+            className="relative overflow-hidden rounded-3xl shadow-2xl"
+            style={{
+              width: "340px",
+              height: "580px",
+              background: `linear-gradient(160deg, ${stories.find(s => s.id === activeStory)?.color[0] ?? "#e63946"}, ${stories.find(s => s.id === activeStory)?.color[1] ?? "#1d3557"})`,
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Progress bars */}
+            <div className="absolute top-4 left-4 right-4 flex gap-1 z-10">
+              {[1,2,3].map(i => (
+                <div key={i} className="flex-1 h-0.5 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.3)" }}>
+                  <div className="h-full rounded-full" style={{ background: "white", width: i === 1 ? "100%" : "0%" }} />
+                </div>
+              ))}
+            </div>
+            {/* Header */}
+            <div className="absolute top-8 left-4 right-10 flex items-center gap-2 z-10">
+              <div className="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center"
+                style={{ background: stories.find(s => s.id === activeStory)?.isOwn ? "#E30A17" : "rgba(255,255,255,0.25)" }}>
+                {stories.find(s => s.id === activeStory)?.isOwn ? (
+                  <svg width="48" height="32" viewBox="0 0 900 600" xmlns="http://www.w3.org/2000/svg" style={{display:"block",flexShrink:0}}>
+                    <rect width="900" height="600" fill="#E30A17"/>
+                    <circle cx="300" cy="300" r="200" fill="white"/>
+                    <circle cx="360" cy="300" r="160" fill="#E30A17"/>
+                    <g transform="translate(530,300) rotate(-12)"><polygon fill="white" points="0,-80 18.6,-57.2 59.5,-24.7 30.4,21.9 37.3,65.2 0,40 -37.3,65.2 -30.4,21.9 -59.5,-24.7 -18.6,-57.2"/></g>
+                  </svg>
+                ) : (
+                  <span className="text-white font-bold text-xs">
+                    {stories.find(s => s.id === activeStory)?.avatar}
+                  </span>
+                )}
+              </div>
+              <div>
+                <p className="text-white font-semibold text-sm leading-none">
+                  {stories.find(s => s.id === activeStory)?.name}
+                </p>
+                <p className="text-white/60 text-[10px] mt-0.5">2 saat önce</p>
+              </div>
+            </div>
+            {/* Content */}
+            <div className="absolute inset-0 flex items-center justify-center p-8">
+              <p className="text-white font-black text-2xl text-center leading-snug drop-shadow-lg">
+                🇹🇷<br/>Türkiye&apos;nin<br/>geleceği biziz!
+              </p>
+            </div>
+            {/* Kapat */}
+            <button
+              className="absolute top-4 right-4 z-10 w-8 h-8 rounded-full flex items-center justify-center"
+              style={{ background: "rgba(0,0,0,0.3)" }}
+              onClick={() => setActiveStory(null)}
+            >
+              <svg width="14" height="14" fill="none" stroke="white" strokeWidth="2.5" viewBox="0 0 24 24">
+                <path d="M18 6 6 18M6 6l12 12"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}

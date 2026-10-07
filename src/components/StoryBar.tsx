@@ -1,101 +1,164 @@
 "use client";
+import React, { useState, useEffect, useRef } from "react";
+import { useStore, timeAgo } from "@/store/useStore";
+import Avatar from "./Avatar";
 
-import { useState } from "react";
-
-const stories = [
-  { id: 1, name: "Senin", avatar: "AG", isOwn: true, seen: false },
-  { id: 2, name: "Ahmet K.", avatar: "AK", isOwn: false, seen: false },
-  { id: 3, name: "Zeynep M.", avatar: "ZM", isOwn: false, seen: false },
-  { id: 4, name: "Burak T.", avatar: "BT", isOwn: false, seen: true },
-  { id: 5, name: "Selin Ö.", avatar: "SÖ", isOwn: false, seen: false },
-  { id: 6, name: "Emre Y.", avatar: "EY", isOwn: false, seen: true },
-  { id: 7, name: "Ayşe D.", avatar: "AD", isOwn: false, seen: false },
-  { id: 8, name: "Can B.", avatar: "CB", isOwn: false, seen: true },
-];
-
-const colors = [
-  "from-[#e63946] to-[#c1121f]",
-  "from-[#1d3557] to-[#457b9d]",
-  "from-[#e63946] to-[#457b9d]",
-  "from-[#2d6a4f] to-[#40916c]",
-  "from-[#e76f51] to-[#f4a261]",
-  "from-[#457b9d] to-[#1d3557]",
-  "from-[#c1121f] to-[#e63946]",
-  "from-[#40916c] to-[#2d6a4f]",
+const GRADS = [
+  ["#e63946","#c1121f"], ["#1d3557","#457b9d"], ["#2d6a4f","#40916c"],
+  ["#e76f51","#f4a261"], ["#457b9d","#1d3557"], ["#c1121f","#e63946"],
 ];
 
 export default function StoryBar() {
-  const [activeStory, setActiveStory] = useState<number | null>(null);
+  const { stories, currentUser, users, seeStory, addStory, deleteStory } = useStore();
+  const [active, setActive] = useState<string | null>(null);
+  const [storyIdx, setStoryIdx] = useState(0);
+  const [progress, setProgress] = useState(0);
+  const [addOpen, setAddOpen] = useState(false);
+  const [storyText, setStoryText] = useState("");
+  const [selGrad, setSelGrad] = useState(0);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const myStories = stories.filter(s => s.authorId === "me");
+  const otherGroups = users.filter(u => u.id !== "me").map(u => ({
+    user: u,
+    stories: stories.filter(s => s.authorId === u.id),
+  })).filter(g => g.stories.length > 0);
+
+  const activeStory = active ? stories.find(s => s.id === active) : null;
+  const activeUser = activeStory ? (activeStory.authorId === "me" ? currentUser : users.find(u => u.id === activeStory.authorId)) : null;
+  const userStories = activeStory ? stories.filter(s => s.authorId === activeStory.authorId) : [];
+
+  useEffect(() => {
+    if (!active) return;
+    setProgress(0);
+    if (timerRef.current) clearInterval(timerRef.current);
+    timerRef.current = setInterval(() => {
+      setProgress(p => {
+        if (p >= 100) {
+          const next = storyIdx + 1;
+          if (next < userStories.length) { setStoryIdx(next); setActive(userStories[next].id); }
+          else { setActive(null); setStoryIdx(0); }
+          return 0;
+        }
+        return p + 2;
+      });
+    }, 100);
+    if (active) seeStory(active);
+    return () => { if (timerRef.current) clearInterval(timerRef.current); };
+  }, [active]);
+
+  function openStory(id: string, idx = 0) { setActive(id); setStoryIdx(idx); }
+  function submitStory() {
+    if (!storyText.trim()) return;
+    addStory(storyText, GRADS[selGrad]);
+    setStoryText(""); setAddOpen(false);
+  }
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-[#e9ecef] p-4 mb-4">
-      <div className="flex gap-4 overflow-x-auto pb-1 scrollbar-hide">
-        {stories.map((story, i) => (
-          <button
-            key={story.id}
-            onClick={() => setActiveStory(story.id)}
-            className="flex flex-col items-center gap-1.5 flex-shrink-0 group"
-          >
-            <div className={`p-0.5 rounded-2xl ${story.seen ? "bg-[#e9ecef]" : "story-ring"}`}>
-              <div className={`w-14 h-14 rounded-[14px] bg-gradient-to-br ${colors[i % colors.length]} flex items-center justify-center border-2 border-white relative`}>
-                {story.isOwn ? (
-                  <>
-                    <span className="text-white font-black text-sm">{story.avatar}</span>
-                    <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-[#e63946] rounded-full border-2 border-white flex items-center justify-center">
-                      <svg width="8" height="8" fill="white" viewBox="0 0 24 24">
-                        <path d="M12 5v14M5 12h14"/>
-                      </svg>
-                    </div>
-                  </>
-                ) : (
-                  <span className="text-white font-bold text-xs">{story.avatar}</span>
-                )}
+    <>
+      <div style={{ background: "#fff", borderRadius: 16, border: "1px solid #eef0f2", boxShadow: "0 1px 6px rgba(0,0,0,0.06)", padding: "14px 16px" }}>
+        <div style={{ display: "flex", gap: 14, overflowX: "auto", paddingBottom: 2, scrollbarWidth: "none" as const }}>
+          {/* Add story button */}
+          <button onClick={() => setAddOpen(true)} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6, flexShrink: 0, background: "none", border: "none", cursor: "pointer", padding: 0 }}>
+            <div style={{ position: "relative" }}>
+              <div style={{ width: 56, height: 56, borderRadius: "50%", border: "2px solid #e5e7eb", display: "flex", alignItems: "center", justifyContent: "center", background: "#f9fafb" }}>
+                <Avatar name={currentUser.name} size={52} color={currentUser.avatarColor} />
+              </div>
+              <div style={{ position: "absolute", bottom: -1, right: -1, width: 20, height: 20, borderRadius: "50%", background: "#e63946", border: "2.5px solid #fff", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <svg width="9" height="9" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
               </div>
             </div>
-            <span className={`text-xs font-medium truncate w-16 text-center ${story.seen ? "text-[#adb5bd]" : "text-[#1a1a2e]"}`}>
-              {story.name}
-            </span>
+            <span style={{ fontSize: 10.5, color: "#374151", fontWeight: 500, maxWidth: 58, textAlign: "center", whiteSpace: "nowrap" }}>Hikaye Ekle</span>
           </button>
-        ))}
+
+          {/* My stories */}
+          {myStories.length > 0 && (
+            <button onClick={() => openStory(myStories[0].id)} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6, flexShrink: 0, background: "none", border: "none", cursor: "pointer", padding: 0 }}>
+              <div style={{ padding: 2.5, borderRadius: "50%", background: `linear-gradient(135deg,${currentUser.avatarColor[0]},${currentUser.avatarColor[1]})` }}>
+                <div style={{ width: 52, height: 52, borderRadius: "50%", border: "2.5px solid #fff", overflow: "hidden" }}>
+                  <Avatar name={currentUser.name} size={52} color={currentUser.avatarColor} />
+                </div>
+              </div>
+              <span style={{ fontSize: 10.5, color: "#374151", fontWeight: 600, maxWidth: 58, textAlign: "center", whiteSpace: "nowrap" }}>Hikayem</span>
+            </button>
+          )}
+
+          {/* Others' stories */}
+          {otherGroups.map(({ user, stories: us }) => {
+            const allSeen = us.every(s => s.seenBy.includes("me"));
+            return (
+              <button key={user.id} onClick={() => openStory(us[0].id)} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6, flexShrink: 0, background: "none", border: "none", cursor: "pointer", padding: 0 }}>
+                <div style={{ padding: 2.5, borderRadius: "50%", background: allSeen ? "#d1d5db" : `linear-gradient(135deg,${user.avatarColor[0]},${user.avatarColor[1]})` }}>
+                  <div style={{ width: 52, height: 52, borderRadius: "50%", border: "2.5px solid #fff", overflow: "hidden" }}>
+                    <Avatar name={user.name} size={52} color={user.avatarColor} />
+                  </div>
+                </div>
+                <span style={{ fontSize: 10.5, color: "#374151", fontWeight: 500, maxWidth: 58, textAlign: "center", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{user.name.split(" ")[0]}</span>
+              </button>
+            );
+          })}
+        </div>
       </div>
 
-      {/* Story Modal */}
-      {activeStory && (
-        <div
-          className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center"
-          onClick={() => setActiveStory(null)}
-        >
-          <div className="w-80 h-[560px] bg-gradient-to-br from-[#e63946] to-[#1d3557] rounded-3xl relative overflow-hidden shadow-2xl">
-            <div className="absolute top-4 left-4 right-4 flex gap-1">
-              {[1,2,3].map(i => (
-                <div key={i} className="flex-1 h-0.5 bg-white/30 rounded-full overflow-hidden">
-                  <div className={`h-full bg-white rounded-full ${i === 1 ? "w-full" : "w-0"}`}></div>
+      {/* Story Viewer */}
+      {active && activeStory && activeUser && (
+        <div onClick={() => { setActive(null); setStoryIdx(0); }} style={{ position: "fixed", inset: 0, zIndex: 300, background: "rgba(0,0,0,0.88)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <div onClick={e => e.stopPropagation()} style={{ position: "relative", width: 340, height: 600, borderRadius: 24, overflow: "hidden", background: `linear-gradient(160deg,${activeStory.gradient[0]},${activeStory.gradient[1]})`, boxShadow: "0 24px 64px rgba(0,0,0,0.5)" }}>
+            {/* Progress bars */}
+            <div style={{ position: "absolute", top: 12, left: 12, right: 12, display: "flex", gap: 4, zIndex: 10 }}>
+              {userStories.map((_, i) => (
+                <div key={i} style={{ flex: 1, height: 2.5, borderRadius: 4, background: "rgba(255,255,255,0.3)", overflow: "hidden" }}>
+                  <div style={{ height: "100%", background: "#fff", width: i < storyIdx ? "100%" : i === storyIdx ? `${progress}%` : "0%" }}/>
                 </div>
               ))}
             </div>
-            <div className="absolute top-10 left-4 flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
-                <span className="text-white font-bold text-xs">AK</span>
+            {/* Header */}
+            <div style={{ position: "absolute", top: 26, left: 12, right: 48, display: "flex", alignItems: "center", gap: 10, zIndex: 10 }}>
+              <div style={{ width: 36, height: 36, borderRadius: "50%", overflow: "hidden", border: "2px solid rgba(255,255,255,0.5)", flexShrink: 0 }}>
+                <Avatar name={activeUser.name} size={36} color={activeUser.avatarColor} />
               </div>
-              <span className="text-white font-semibold text-sm">Ak Genç</span>
-              <span className="text-white/60 text-xs">2 sa</span>
+              <div>
+                <p style={{ color: "#fff", fontWeight: 700, fontSize: 14, margin: "0 0 1px", lineHeight: 1 }}>{activeUser.name}</p>
+                <p style={{ color: "rgba(255,255,255,0.6)", fontSize: 10, margin: 0 }}>{timeAgo(activeStory.createdAt)}</p>
+              </div>
             </div>
-            <div className="absolute inset-0 flex items-center justify-center">
-              <p className="text-white font-bold text-2xl text-center px-8">
-                🇹🇷<br/>Türkiye'nin geleceği<br/>biziz!
-              </p>
-            </div>
-            <button
-              className="absolute top-4 right-4 text-white/80 hover:text-white"
-              onClick={() => setActiveStory(null)}
-            >
-              <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                <path d="M18 6 6 18M6 6l12 12"/>
-              </svg>
+            {/* Close */}
+            <button onClick={() => { setActive(null); setStoryIdx(0); }} style={{ position: "absolute", top: 16, right: 14, zIndex: 10, width: 32, height: 32, borderRadius: "50%", background: "rgba(0,0,0,0.35)", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <svg width="14" height="14" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
             </button>
+            {/* Delete own story */}
+            {activeStory.authorId === "me" && (
+              <button onClick={() => { deleteStory(activeStory.id); setActive(null); }} style={{ position: "absolute", bottom: 24, right: 14, zIndex: 10, background: "rgba(230,57,70,0.85)", border: "none", borderRadius: 20, padding: "8px 16px", color: "#fff", fontSize: 12, fontWeight: 700, cursor: "pointer" }}>Sil</button>
+            )}
+            {/* Story content */}
+            <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", padding: 32 }}>
+              <p style={{ color: "#fff", fontWeight: 900, fontSize: 26, textAlign: "center", lineHeight: 1.4, textShadow: "0 2px 16px rgba(0,0,0,0.4)", margin: 0, whiteSpace: "pre-line" }}>{activeStory.content}</p>
+            </div>
+            {/* Tap zones */}
+            <div onClick={() => { if (storyIdx > 0) { const i = storyIdx-1; setStoryIdx(i); setActive(userStories[i].id); } }} style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: "40%", cursor: "pointer", zIndex: 5 }}/>
+            <div onClick={() => { const i = storyIdx+1; if (i < userStories.length) { setStoryIdx(i); setActive(userStories[i].id); } else { setActive(null); setStoryIdx(0); } }} style={{ position: "absolute", right: 0, top: 0, bottom: 0, width: "40%", cursor: "pointer", zIndex: 5 }}/>
           </div>
         </div>
       )}
-    </div>
+
+      {/* Add Story Modal */}
+      {addOpen && (
+        <div onClick={() => setAddOpen(false)} style={{ position: "fixed", inset: 0, zIndex: 300, background: "rgba(0,0,0,0.7)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <div onClick={e => e.stopPropagation()} style={{ background: "#fff", borderRadius: 24, padding: 28, width: 360, boxShadow: "0 20px 60px rgba(0,0,0,0.25)" }}>
+            <h3 style={{ fontWeight: 800, fontSize: 18, color: "#111827", margin: "0 0 16px" }}>Hikaye Ekle</h3>
+            <div style={{ borderRadius: 16, padding: 16, marginBottom: 14, minHeight: 120, display: "flex", alignItems: "center", justifyContent: "center", background: `linear-gradient(135deg,${GRADS[selGrad][0]},${GRADS[selGrad][1]})` }}>
+              <textarea value={storyText} onChange={e => setStoryText(e.target.value)} placeholder="Hikayen ne? 🇹🇷" rows={3} style={{ background: "transparent", border: "none", outline: "none", color: "#fff", fontWeight: 700, fontSize: 18, textAlign: "center", resize: "none", width: "100%", fontFamily: "inherit", lineHeight: 1.4 } as React.CSSProperties}/>
+            </div>
+            <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
+              {GRADS.map((g, i) => (
+                <button key={i} onClick={() => setSelGrad(i)} style={{ width: 32, height: 32, borderRadius: "50%", background: `linear-gradient(135deg,${g[0]},${g[1]})`, border: i === selGrad ? "3px solid #111827" : "3px solid transparent", cursor: "pointer", flexShrink: 0, padding: 0 }}/>
+              ))}
+            </div>
+            <button onClick={submitStory} disabled={!storyText.trim()} style={{ width: "100%", padding: "12px 0", background: "linear-gradient(135deg,#e63946,#c1121f)", color: "#fff", border: "none", borderRadius: 14, fontSize: 14, fontWeight: 700, cursor: "pointer", opacity: storyText.trim() ? 1 : 0.4 }}>Paylaş</button>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
+

@@ -1,0 +1,44 @@
+const fs=require('fs');
+const d=String.fromCharCode(60),s=String.fromCharCode(62),amp=String.fromCharCode(38);
+const L=JSON.parse(fs.readFileSync('c:/Users/agity/Desktop/akgencler.com.tr/fix_storybar_data.json','utf8'));
+const a=t=>L.push(t);
+
+// Modal
+a('      {active'+amp+amp+'st'+amp+amp+'(');
+a('        '+d+'div onClick={()=>setActive(null)} style={{position:"fixed",inset:0,zIndex:200,background:"rgba(0,0,0,0.85)",display:"flex",alignItems:"center",justifyContent:"center"}}'+s);
+a('          '+d+'div onClick={e=>e.stopPropagation()} style={{position:"relative",width:340,height:580,borderRadius:24,overflow:"hidden",boxShadow:"0 20px 60px rgba(0,0,0,0.5)",background:`linear-gradient(160deg,${st.color[0]},${st.color[1]})`}}'+s);
+a('            '+d+'div style={{position:"absolute",top:16,left:16,right:16,display:"flex",gap:4,zIndex:10}}'+s);
+a('            {[1,2,3].map(i=>(');
+a('              '+d+'div key={i} style={{flex:1,height:2,borderRadius:4,overflow:"hidden",background:"rgba(255,255,255,0.3)"}}'+s);
+a('                '+d+'div style={{height:"100%",borderRadius:4,background:"#fff",width:i===1?"100%":"0%"}}'+s+d+'/div'+s);
+a('              '+d+'/div'+s);
+a('            ))}');
+a('            '+d+'/div'+s);
+a('            '+d+'div style={{position:"absolute",top:28,left:16,right:48,display:"flex",alignItems:"center",gap:10,zIndex:10}}'+s);
+a('              '+d+'div style={{width:36,height:36,borderRadius:"50%",overflow:"hidden",border:"2px solid rgba(255,255,255,0.5)",display:"flex",alignItems:"center",justifyContent:"center",background:"rgba(255,255,255,0.15)"}}'+s);
+a('                '+d+'span style={{color:"#fff",fontWeight:700,fontSize:13}}'+s+'{st.avatar}'+d+'/span'+s);
+a('              '+d+'/div'+s);
+a('              '+d+'div'+s);
+a('                '+d+'p style={{color:"#fff",fontWeight:700,fontSize:14,margin:"0 0 2px",lineHeight:1}}'+s+'{st.name}'+d+'/p'+s);
+a('                '+d+'p style={{color:"rgba(255,255,255,0.55)",fontSize:10,margin:0}}'+s+'2 saat önce'+d+'/p'+s);
+a('              '+d+'/div'+s);
+a('            '+d+'/div'+s);
+a('            '+d+'div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",padding:32}}'+s);
+a('              '+d+'p style={{color:"#fff",fontWeight:900,fontSize:26,textAlign:"center",lineHeight:1.4,textShadow:"0 2px 16px rgba(0,0,0,0.4)",margin:0}}'+s);
+a('                🇹🇷'+d+'br/'+s);
+a("                Türkiye'nin"+d+'br/'+s);
+a('                geleceği biziz!');
+a('              '+d+'/p'+s);
+a('            '+d+'/div'+s);
+a('            '+d+'button onClick={()=>setActive(null)} style={{position:"absolute",top:16,right:16,zIndex:10,width:32,height:32,borderRadius:"50%",background:"rgba(0,0,0,0.4)",border:"none",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}'+s);
+a('              '+d+'svg width="14" height="14" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" viewBox="0 0 24 24"'+s+d+'path d="M18 6 6 18M6 6l12 12"/'+s+d+'/svg'+s);
+a('            '+d+'/button'+s);
+a('          '+d+'/div'+s);
+a('        '+d+'/div'+s);
+a('      )}');
+a('    '+d+'/React.Fragment'+s);
+a('  );');
+a('}');
+
+fs.writeFileSync('c:/Users/agity/Desktop/akgencler.com.tr/src/components/StoryBar.tsx',L.join('\n'),'utf8');
+console.log('StoryBar.tsx written, lines:',L.length);
