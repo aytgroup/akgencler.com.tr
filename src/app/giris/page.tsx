@@ -156,7 +156,7 @@ export default function GirisPage() {
             {err&&(<div style={{fontSize:12,color:"#e63946",background:"#fff1f2",border:"1px solid #fecdd3",borderRadius:10,padding:"10px 14px",display:"flex",alignItems:"center",gap:8}}>⚠️ {err}</div>)}
             <button onClick={handleSubmit} disabled={loading}
               style={{padding:"14px 0",background:loading?"#f3f4f6":"linear-gradient(135deg,#e63946,#c1121f)",color:loading?"#9ca3af":"#fff",border:"none",borderRadius:14,fontSize:15,fontWeight:800,cursor:loading?"not-allowed":"pointer",marginTop:4,boxShadow:loading?"none":"0 4px 20px rgba(230,57,70,0.35)",transition:"all .2s",display:"flex",alignItems:"center",justifyContent:"center",gap:8}}>
-              {loading?<><span style={{width:16,height:16,borderRadius:"50%",border:"2.5px solid #d1d5db",borderTopColor:"transparent",animation:"spin .7s linear infinite",display:"inline-block"}}/>Yükleniyor...</>:tab==="giris"?"Giriş Yap 🚀":"Hesap Oluştur 🎉"}
+              {loading?<><span style={{width:16,height:16,borderRadius:"50%",border:"2.5px solid #d1d5db",borderTopColor:"transparent",animation:"spin .7s linear infinite",display:"inline-block"}}/>Yükleniyor...</>:tab==="giris"?"Giriş Yap":"Hesap Oluştur 🎉"}
             </button>
           </div>
           <p style={{textAlign:"center",fontSize:11,color:"#9ca3af",marginTop:20,lineHeight:1.7}}>
