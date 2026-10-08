@@ -12,18 +12,15 @@ export function GET() {
     { url: "/giris", priority: "0.7", freq: "monthly" },
   ];
 
-  const xml = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${pages
-  .map(
-    (p) => `  <url>
-    <loc>${base}${p.url}</loc>
-    <changefreq>${p.freq}</changefreq>
-    <priority>${p.priority}</priority>
-  </url>`
-  )
-  .join("\n")}
-</urlset>`;
+  const xml = [
+    `<?xml version="1.0" encoding="UTF-8"?>`,
+    `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`,
+    ...pages.map(
+      (p) =>
+        `  <url>\n    <loc>${base}${p.url}</loc>\n    <changefreq>${p.freq}</changefreq>\n    <priority>${p.priority}</priority>\n  </url>`
+    ),
+    `</urlset>`,
+  ].join("\n");
 
   return new NextResponse(xml, {
     headers: { "Content-Type": "application/xml" },
