@@ -65,7 +65,7 @@ export default function AppleIcon() {
               lineHeight: 1,
             }}
           >
-            &#9733;
+            ★
           </div>
         </div>
         <div

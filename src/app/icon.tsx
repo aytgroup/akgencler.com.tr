@@ -65,7 +65,7 @@ export default function Icon() {
               lineHeight: 1,
             }}
           >
-            &#9733;
+            ★
           </div>
         </div>
         <div
