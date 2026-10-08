@@ -11,64 +11,74 @@ export default function Icon() {
           width: 32,
           height: 32,
           borderRadius: 8,
-          background: "#1a237e",
+          background: "#0D1B5E",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          overflow: "hidden",
+          gap: 2,
+          padding: "0 3px",
         }}
       >
-        {/* Kırmızı daire */}
         <div
           style={{
-            width: 26,
-            height: 26,
+            width: 11,
+            height: 11,
             borderRadius: "50%",
             background: "#E30A17",
+            position: "relative",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            position: "relative",
+            flexShrink: 0,
           }}
         >
-          {/* Hilal - büyük beyaz daire */}
           <div
             style={{
               position: "absolute",
-              width: 14,
-              height: 14,
+              width: 7,
+              height: 7,
               borderRadius: "50%",
               background: "white",
-              left: 4,
-              top: 6,
+              left: 1,
+              top: 2,
             }}
           />
-          {/* Hilal - üst kırmızı daire */}
           <div
             style={{
               position: "absolute",
-              width: 11,
-              height: 11,
+              width: 6,
+              height: 6,
               borderRadius: "50%",
               background: "#E30A17",
-              left: 6,
-              top: 6,
+              left: 3,
+              top: 2,
             }}
           />
-          {/* Yıldız */}
           <div
             style={{
               position: "absolute",
-              right: 3,
-              top: 7,
+              right: 0,
+              top: 1,
               color: "white",
-              fontSize: 9,
+              fontSize: 5,
               fontWeight: 900,
               lineHeight: 1,
             }}
           >
-            ★
+            &#9733;
           </div>
+        </div>
+        <div
+          style={{
+            color: "white",
+            fontSize: 13,
+            fontWeight: 900,
+            letterSpacing: -0.5,
+            lineHeight: 1,
+            fontFamily: "sans-serif",
+          }}
+        >
+          AK
         </div>
       </div>
     ),
