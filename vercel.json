@@ -1,24 +1,8 @@
 {
-  "headers": [
-    {
-      "source": "/googled0c975bfa2ee0350.html",
-      "headers": [
-        { "key": "Content-Type", "value": "text/html" },
-        { "key": "Cache-Control", "value": "no-store" }
-      ]
-    },
-    {
-      "source": "/google(.*).html",
-      "headers": [
-        { "key": "Content-Type", "value": "text/html" },
-        { "key": "Cache-Control", "value": "no-store" }
-      ]
-    }
-  ],
   "rewrites": [
     {
       "source": "/googled0c975bfa2ee0350.html",
-      "destination": "/googled0c975bfa2ee0350.html"
+      "destination": "/api/google-verify"
     }
   ]
 }
