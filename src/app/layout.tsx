@@ -70,6 +70,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="tr" className={`${geistSans.variable} h-full`}>
+      <head>
+        <meta name="google-site-verification" content="5QMM1IiFeSuTFfcbhyOEm1B5BK_aYEYOkAmu09utiSA" />
+      </head>
       <body className="min-h-full bg-[#f8f9fa] text-[#1a1a2e]">
         <AuthGuard>
           {children}
