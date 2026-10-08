@@ -67,7 +67,7 @@ export default function GirisPage() {
           </div>
           <div>
             <p style={{fontWeight:900,fontSize:20,color:"#fff",margin:0,letterSpacing:1}}>AKGENÇLER</p>
-            <p style={{fontSize:10,color:"rgba(255,255,255,0.6)",margin:0}}>Türkiye&apos;nin Ak ve Âkil Gençlik Platformu</p>
+            <p style={{fontSize:10,color:"rgba(255,255,255,0.6)",margin:0}}>Türkiye'nin Ak ve Âkil Gençlik Platformu</p>
           </div>
         </div>
         {/* BANNER */}
@@ -160,7 +160,7 @@ export default function GirisPage() {
             </button>
           </div>
           <p style={{textAlign:"center",fontSize:11,color:"#9ca3af",marginTop:20,lineHeight:1.7}}>
-            Devam ederek <span style={{color:"#e63946",fontWeight:700}}>Kullanım Koşulları</span>&apos;nı kabul etmiş olursun.
+            Devam ederek <span style={{color:"#e63946",fontWeight:700}}>Kullanım Koşulları</span>'nı kabul etmiş olursun.
           </p>
           <div style={{display:"flex",alignItems:"center",gap:12,marginTop:20}}>
             <div style={{flex:1,height:1,background:"#f3f4f6"}}/>

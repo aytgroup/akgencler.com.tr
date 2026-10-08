@@ -78,7 +78,7 @@ export default function RightPanel() {
       {/* Footer */}
       <div style={{ background: "#fff", borderRadius: 16, border: "1px solid #f0f0f0", boxShadow: "0 1px 4px rgba(0,0,0,0.06)", padding: "14px 16px", textAlign: "center" }}>
         <p style={{ fontSize: 12, fontWeight: 800, color: "#1c1e21", margin: "0 0 4px" }}>AKGENÇLER © 2026</p>
-        <p style={{ fontSize: 11, color: "#9ca3af", marginBottom: 10, lineHeight: 1.5 }}>Türkiye&apos;nin Ak ve Âkil Gençlik Platformu</p>
+        <p style={{ fontSize: 11, color: "#9ca3af", marginBottom: 10, lineHeight: 1.5 }}>Türkiye'nin Ak ve Âkil Gençlik Platformu</p>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 4, flexWrap: "wrap" }}>
           {["Hakkında", "Gizlilik", "Koşullar", "Yardım"].map((item, i, arr) => (
             <span key={item} style={{ display: "flex", alignItems: "center", gap: 4 }}>

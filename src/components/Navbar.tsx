@@ -50,7 +50,7 @@ export default function Navbar() {
           </div>
           <div>
             <span style={{ fontWeight: 900, fontSize: 17, background: "linear-gradient(135deg,#e63946,#c1121f)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", display: "block", lineHeight: 1 }}>AKGENÇLER</span>
-            <span style={{ fontSize: 8.5, color: "#9ca3af", fontWeight: 500, display: "block", marginTop: 2, letterSpacing: "0.1px", lineHeight: 1.3 }}>Türkiye&apos;nin Ak ve Âkil Gençlik Platformu</span>
+            <span style={{ fontSize: 8.5, color: "#9ca3af", fontWeight: 500, display: "block", marginTop: 2, letterSpacing: "0.1px", lineHeight: 1.3 }}>Türkiye'nin Ak ve Âkil Gençlik Platformu</span>
           </div>
         </Link>
 
