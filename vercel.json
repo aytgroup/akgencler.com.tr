@@ -1,8 +1,1 @@
-{
-  "rewrites": [
-    {
-      "source": "/googled0c975bfa2ee0350.html",
-      "destination": "/api/google-verify"
-    }
-  ]
-}
+{}
